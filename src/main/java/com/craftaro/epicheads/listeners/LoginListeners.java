@@ -6,7 +6,6 @@ import com.craftaro.epicheads.database.DataHelper;
 import com.craftaro.epicheads.head.Category;
 import com.craftaro.epicheads.head.Head;
 import com.craftaro.epicheads.head.HeadManager;
-import com.craftaro.third_party.com.cryptomorin.xseries.profiles.builder.XSkull;
 import com.craftaro.third_party.com.cryptomorin.xseries.profiles.objects.Profileable;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -34,7 +33,7 @@ public class LoginListeners implements Listener {
         Player player = event.getPlayer();
         HeadManager headManager = this.plugin.getHeadManager();
 
-        String encodedStr = XSkull.createItem().profile(new Profileable.UUIDProfileable(player.getUniqueId())).getProfileValue();
+        String encodedStr = Profileable.of(player.getUniqueId()).getProfileValue();
         if (encodedStr == null) {
             return;
         }
