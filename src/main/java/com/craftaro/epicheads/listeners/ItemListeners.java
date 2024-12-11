@@ -32,7 +32,7 @@ public class ItemListeners implements Listener {
             return;
         }
 
-        String encodedStr = XSkull.of(item).getProfileString();
+        String encodedStr = XSkull.of(item).getProfileValue();
         if (encodedStr == null) {
             return;
         }
