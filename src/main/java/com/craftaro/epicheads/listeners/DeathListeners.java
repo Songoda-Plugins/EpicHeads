@@ -1,13 +1,13 @@
 package com.craftaro.epicheads.listeners;
 
-import com.craftaro.core.nms.Nms;
-import com.craftaro.core.utils.HeadType;
-import com.craftaro.core.utils.ItemUtils;
-import com.craftaro.core.utils.TextUtils;
+import com.songoda.core.nms.Nms;
+import com.songoda.core.utils.HeadType;
+import com.songoda.core.utils.ItemUtils;
+import com.songoda.core.utils.TextUtils;
 import com.craftaro.epicheads.EpicHeads;
 import com.craftaro.epicheads.head.Head;
 import com.craftaro.epicheads.settings.Settings;
-import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
+import com.songoda.third_party.com.cryptomorin.xseries.XMaterial;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

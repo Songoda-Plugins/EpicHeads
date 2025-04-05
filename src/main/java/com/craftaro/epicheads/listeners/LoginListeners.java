@@ -1,7 +1,7 @@
 package com.craftaro.epicheads.listeners;
 
-import com.craftaro.core.nms.Nms;
-import com.craftaro.core.utils.ItemUtils;
+import com.songoda.core.nms.Nms;
+import com.songoda.core.utils.ItemUtils;
 import com.craftaro.epicheads.EpicHeads;
 import com.craftaro.epicheads.database.DataHelper;
 import com.craftaro.epicheads.head.Category;

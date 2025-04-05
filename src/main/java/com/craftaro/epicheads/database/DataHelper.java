@@ -1,13 +1,13 @@
 package com.craftaro.epicheads.database;
 
-import com.craftaro.core.database.DataManager;
-import com.craftaro.core.database.DatabaseConnector;
-import com.craftaro.core.database.DatabaseType;
+import com.songoda.core.database.DataManager;
+import com.songoda.core.database.DatabaseConnector;
+import com.songoda.core.database.DatabaseType;
 import com.craftaro.epicheads.EpicHeads;
 import com.craftaro.epicheads.head.Head;
 import com.craftaro.epicheads.players.EPlayer;
-import com.craftaro.third_party.org.jooq.Query;
-import com.craftaro.third_party.org.jooq.impl.DSL;
+import com.songoda.third_party.org.jooq.Query;
+import com.songoda.third_party.org.jooq.impl.DSL;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import org.bukkit.entity.Player;

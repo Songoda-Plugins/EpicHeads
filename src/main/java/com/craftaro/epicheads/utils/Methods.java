@@ -1,10 +1,10 @@
 package com.craftaro.epicheads.utils;
 
-import com.craftaro.core.compatibility.CompatibleMaterial;
-import com.craftaro.core.utils.TextUtils;
+import com.songoda.core.compatibility.CompatibleMaterial;
+import com.songoda.core.utils.TextUtils;
 import com.craftaro.epicheads.EpicHeads;
 import com.craftaro.epicheads.settings.Settings;
-import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
+import com.songoda.third_party.com.cryptomorin.xseries.XMaterial;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 

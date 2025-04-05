@@ -1,8 +1,8 @@
 package com.craftaro.epicheads.utils;
 
-import com.craftaro.core.hooks.economies.Economy;
-import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
-import com.craftaro.third_party.com.cryptomorin.xseries.profiles.builder.XSkull;
+import com.songoda.core.hooks.economies.Economy;
+import com.songoda.third_party.com.cryptomorin.xseries.XMaterial;
+import com.songoda.third_party.com.cryptomorin.xseries.profiles.builder.XSkull;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 

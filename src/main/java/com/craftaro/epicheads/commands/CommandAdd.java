@@ -1,6 +1,6 @@
 package com.craftaro.epicheads.commands;
 
-import com.craftaro.core.commands.AbstractCommand;
+import com.songoda.core.commands.AbstractCommand;
 import com.craftaro.epicheads.EpicHeads;
 import com.craftaro.epicheads.database.DataHelper;
 import com.craftaro.epicheads.head.Category;

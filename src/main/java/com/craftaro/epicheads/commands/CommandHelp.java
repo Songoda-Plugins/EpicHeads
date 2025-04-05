@@ -1,9 +1,9 @@
 package com.craftaro.epicheads.commands;
 
-import com.craftaro.core.chat.AdventureUtils;
-import com.craftaro.core.commands.AbstractCommand;
-import com.craftaro.core.third_party.net.kyori.adventure.text.Component;
-import com.craftaro.core.utils.TextUtils;
+import com.songoda.core.chat.AdventureUtils;
+import com.songoda.core.commands.AbstractCommand;
+import com.songoda.core.third_party.net.kyori.adventure.text.Component;
+import com.songoda.core.utils.TextUtils;
 import com.craftaro.epicheads.EpicHeads;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;

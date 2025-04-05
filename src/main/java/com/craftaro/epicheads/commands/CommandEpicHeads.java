@@ -1,7 +1,7 @@
 package com.craftaro.epicheads.commands;
 
-import com.craftaro.core.commands.AbstractCommand;
-import com.craftaro.core.gui.GuiManager;
+import com.songoda.core.commands.AbstractCommand;
+import com.songoda.core.gui.GuiManager;
 import com.craftaro.epicheads.gui.GUIOverview;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

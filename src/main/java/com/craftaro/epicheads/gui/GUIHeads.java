@@ -1,18 +1,18 @@
 package com.craftaro.epicheads.gui;
 
-import com.craftaro.core.chat.AdventureUtils;
-import com.craftaro.core.gui.Gui;
-import com.craftaro.core.gui.GuiManager;
-import com.craftaro.core.gui.GuiUtils;
-import com.craftaro.core.hooks.EconomyManager;
-import com.craftaro.core.input.ChatPrompt;
+import com.songoda.core.chat.AdventureUtils;
+import com.songoda.core.gui.Gui;
+import com.songoda.core.gui.GuiManager;
+import com.songoda.core.gui.GuiUtils;
+import com.songoda.core.hooks.EconomyManager;
+import com.songoda.core.input.ChatPrompt;
 import com.craftaro.epicheads.EpicHeads;
 import com.craftaro.epicheads.database.DataHelper;
 import com.craftaro.epicheads.head.Category;
 import com.craftaro.epicheads.head.Head;
 import com.craftaro.epicheads.players.EPlayer;
 import com.craftaro.epicheads.settings.Settings;
-import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
+import com.songoda.third_party.com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;

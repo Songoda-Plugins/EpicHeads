@@ -1,10 +1,10 @@
 package com.craftaro.epicheads.commands;
 
-import com.craftaro.core.commands.AbstractCommand;
-import com.craftaro.core.compatibility.CompatibleHand;
-import com.craftaro.core.utils.ItemUtils;
+import com.songoda.core.commands.AbstractCommand;
+import com.songoda.core.compatibility.CompatibleHand;
+import com.songoda.core.utils.ItemUtils;
 import com.craftaro.epicheads.EpicHeads;
-import com.craftaro.third_party.com.cryptomorin.xseries.profiles.builder.XSkull;
+import com.songoda.third_party.com.cryptomorin.xseries.profiles.builder.XSkull;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

@@ -1,7 +1,7 @@
 package com.craftaro.epicheads.head;
 
-import com.craftaro.core.utils.SkullItemCreator;
-import com.craftaro.core.utils.TextUtils;
+import com.songoda.core.utils.SkullItemCreator;
+import com.songoda.core.utils.TextUtils;
 import com.craftaro.epicheads.EpicHeads;
 import com.craftaro.epicheads.settings.Settings;
 import org.bukkit.inventory.ItemStack;
