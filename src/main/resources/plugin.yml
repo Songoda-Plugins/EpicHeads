@@ -3,13 +3,13 @@ description: ${project.description}
 version: ${project.version}
 api-version: 1.13
 
-main: com.craftaro.epicheads.EpicHeads
+main: com.songoda.epicheads.EpicHeads
 softdepend:
   - PlayerPoints
   - Reserve
   - Vault
 
-author: Craftaro
+author: Songoda
 website: ${project.url}
 
 commands:
