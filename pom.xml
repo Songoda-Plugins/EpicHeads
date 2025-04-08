@@ -3,10 +3,10 @@
 
     <groupId>com.songoda</groupId>
     <artifactId>EpicHeads</artifactId>
-    <version>5.0.0</version>
+    <version>5.0.1</version>
 
     <name>EpicHeads</name>
-    <description>Allows you and your players to search over 19,000 unique and artistic heads – Perfect for building immersive masterpieces.</description>
+    <description>Allows you and your players to search over 80,000 unique and artistic heads – Perfect for building immersive masterpieces.</description>
     <url>https://songoda.com/product/epicheads-7</url>
 
     <properties>
