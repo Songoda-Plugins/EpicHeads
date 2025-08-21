@@ -76,11 +76,12 @@ public class GUIHeads extends Gui {
 
         this.pages = (int) Math.ceil(numHeads / 45.0);
 
-        this.setTitle(name + " (" + numHeads + ") " + this.plugin.getLocale().getMessage("general.word.page").toText() + " " + (this.page) + "/" + (this.pages));
+        this.setTitle(name + " (" + numHeads + ")");
     }
 
     private void showPage() {
-        updateTitle();
+        if (!isOpen())
+            updateTitle();
         List<Head> pageHeads = this.heads.stream().skip((this.page - 1) * (this.rows - 1) * 9).limit((this.rows - 1) * 9)
                 .collect(Collectors.toList());
 
