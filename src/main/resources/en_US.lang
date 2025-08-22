@@ -24,6 +24,8 @@ gui:
     search: '&9Create Search'
     categories: '&cBack To Categories'
     delete: '&cMiddle-Click to delete'
+    leftclick: '&aLeft-click to get this head'
+    rightclick: '&7Right-click to rate this head'
   general:
     previous: '&6Previous Page'
     next: '&6Next Page'
@@ -41,6 +43,13 @@ event:
     nopermission: '&cYou do not have permission to use that command.'
   buyhead:
     cannotafford: '&cYou cannot afford this head.'
+  rating:
+    prompt: '&6Rate this head (1-5 stars): '
+    success: '&7You rated &6%head% &7with &e%rating% star%plural%&7!'
+    invalid: '&cPlease enter a rating between 1-5!'
+    invalidnumber: '&cPlease enter a valid number between 1-5!'
+    canceled: '&cRating canceled.'
+    nopermission: '&cYou do not have permission to rate heads.'
 command:
   give:
     notonline: '&cThe player &4%name% &ccould not be found.'
@@ -53,3 +62,5 @@ command:
   givetoken:
     success: '&7You gave &6%player% %amount% &7player head tokens.'
     receive: '&7You have been given &6%amount% &7player head tokens.'
+  rate:
+    nopermission: '&cYou do not have permission to rate heads.'

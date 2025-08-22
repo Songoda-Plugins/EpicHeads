@@ -23,7 +23,7 @@ public class CommandHelp extends AbstractCommand {
         sender.sendMessage("");
         Component component = AdventureUtils.formatComponent(String.format("<color:#ff8080>&l%s &8» &7Version %s Created with <3 by <gradient:#ec4e74:#f4c009><b><o>Songoda</o></b></gradient>",
                 this.plugin.getDescription().getName(), this.plugin.getDescription().getVersion()));
-        AdventureUtils.sendMessage(this.plugin, component, sender);
+        AdventureUtils.sendMessage(component, sender);
         sender.sendMessage("");
         sender.sendMessage(TextUtils.formatText("&7Welcome to EpicHeads! To get started try using the command /heads to access the heads panel."));
         sender.sendMessage("");

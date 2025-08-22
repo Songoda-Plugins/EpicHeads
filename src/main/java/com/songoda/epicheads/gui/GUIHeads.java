@@ -76,12 +76,18 @@ public class GUIHeads extends Gui {
 
         this.pages = (int) Math.ceil(numHeads / 45.0);
 
-        this.setTitle(name + " (" + numHeads + ") " + this.plugin.getLocale().getMessage("general.word.page").toText() + " " + (this.page) + "/" + (this.pages));
+        this.setTitle(name + " (" + numHeads + ")");
     }
 
     private void showPage() {
-        updateTitle();
-        List<Head> pageHeads = this.heads.stream().skip((this.page - 1) * (this.rows - 1) * 9).limit((this.rows - 1) * 9)
+        if (!isOpen())
+            updateTitle();
+        // Sort heads by rating (highest first), then by favorites
+        List<Head> sortedHeads = this.heads.stream()
+                .sorted(Comparator.<Head>comparingDouble(head -> head.getAverageRating()).reversed())
+                .collect(Collectors.toList());
+        
+        List<Head> pageHeads = sortedHeads.stream().skip((this.page - 1) * (this.rows - 1) * 9).limit((this.rows - 1) * 9)
                 .collect(Collectors.toList());
 
         if (this.page - 3 >= 1) {
@@ -184,6 +190,9 @@ public class GUIHeads extends Gui {
             ItemStack item = head.asItemStack(favorites.contains(head.getUrl()), free);
             ItemMeta meta = item.getItemMeta();
             List<String> lore = item.getItemMeta().getLore();
+            lore.add("");
+            lore.add(this.plugin.getLocale().getMessage("gui.heads.leftclick").toText());
+            lore.add(this.plugin.getLocale().getMessage("gui.heads.rightclick").toText());
             lore.add(this.plugin.getLocale().getMessage("gui.heads.delete").toText());
             meta.setLore(lore);
             item.setItemMeta(meta);
@@ -204,6 +213,42 @@ public class GUIHeads extends Gui {
                         ePlayer.addFavorite(head.getUrl());
                     }
                     showPage();
+                    return;
+                } else if (event.clickType == ClickType.RIGHT) {
+                    // Right-click to rate head
+                    if (!event.player.hasPermission("epicheads.rate")) {
+                        this.plugin.getLocale().getMessage("event.rating.nopermission").sendPrefixedMessage(event.player);
+                        return;
+                    }
+                    exit();
+                    ChatPrompt.showPrompt(this.plugin, event.player, 
+                        this.plugin.getLocale().getMessage("event.rating.prompt").toText(), 
+                        promptEvent -> {
+                            try {
+                                int rating = Integer.parseInt(promptEvent.getMessage().trim());
+                                if (rating >= 1 && rating <= 5) {
+                                    DataHelper.addHeadRating(head.getId(), event.player.getUniqueId(), rating);
+                                    DataHelper.updateHeadRatingStats(head);
+                                    String plural = rating != 1 ? "s" : "";
+                                    this.plugin.getLocale().getMessage("event.rating.success")
+                                        .processPlaceholder("head", head.getName())
+                                        .processPlaceholder("rating", String.valueOf(rating))
+                                        .processPlaceholder("plural", plural)
+                                        .sendPrefixedMessage(event.player);
+                                } else {
+                                    this.plugin.getLocale().getMessage("event.rating.invalid").sendPrefixedMessage(event.player);
+                                }
+                            } catch (NumberFormatException e) {
+                                this.plugin.getLocale().getMessage("event.rating.invalidnumber").sendPrefixedMessage(event.player);
+                            }
+                        }).setOnClose(() -> {
+                            showPage();
+                            this.guiManager.showGUI(event.player, this);
+                        }).setOnCancel(() -> {
+                            this.plugin.getLocale().getMessage("event.rating.canceled").sendPrefixedMessage(event.player);
+                            showPage();
+                            this.guiManager.showGUI(event.player, this);
+                        });
                     return;
                 }
                 if (!free) {

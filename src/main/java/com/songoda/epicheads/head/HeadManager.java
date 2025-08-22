@@ -1,5 +1,8 @@
 package com.songoda.epicheads.head;
 
+import com.songoda.epicheads.database.DataHelper;
+import org.bukkit.Bukkit;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -17,46 +20,64 @@ public class HeadManager {
     private final List<Category> registeredCategories = new ArrayList<>();
     private final Set<Head> disabledHeads = new HashSet<>();
 
+    // Cache for getHeads() result
+    private List<Head> cachedHeads = null;
+
+    // Invalidate cache whenever underlying collections change.
+    private void invalidateCache() {
+        cachedHeads = null;
+    }
+
     public Head addHead(Head head) {
         this.registeredHeads.add(head);
+        invalidateCache();
         return head;
     }
 
     public void addHeads(Head... heads) {
         this.registeredHeads.addAll(Arrays.asList(heads));
+        invalidateCache();
     }
 
     public void addHeads(Collection<Head> heads) {
         this.registeredHeads.addAll(heads);
+        invalidateCache();
     }
 
     public void addLocalHeads(Head... heads) {
         this.localRegisteredHeads.addAll(Arrays.asList(heads));
+        invalidateCache();
     }
 
     public void addLocalHead(Head head) {
         this.localRegisteredHeads.add(head);
+        invalidateCache();
     }
 
     public void addLocalHeads(Collection<Head> heads) {
         this.localRegisteredHeads.addAll(heads);
+        invalidateCache();
+        // Load rating stats for local heads
+        loadRatingStatsAsync(heads);
     }
 
     public Head getHead(String name) {
-        return getHeads().stream().filter(head -> head.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
+        return getHeads().stream()
+                .filter(head -> head.getName().equalsIgnoreCase(name))
+                .findFirst().orElse(null);
     }
 
     public List<Head> getHeadsByQuery(String query) {
-        List<Head> result = getHeads().stream().filter(head -> head.getName().contains(query)).collect(Collectors.toList());
+        List<Head> result = getHeads().stream()
+                .filter(head -> head.getName().contains(query))
+                .collect(Collectors.toList());
 
         if (result.isEmpty()) {
             for (Category category : this.registeredCategories) {
                 if (!category.getName().equalsIgnoreCase(query)) {
                     continue;
                 }
-
-                return getHeads()
-                        .stream()
+                return getHeads().stream()
                         .filter(head -> head.getCategory() == category)
                         .collect(Collectors.toList());
             }
@@ -74,10 +95,16 @@ public class HeadManager {
         return list;
     }
 
+    // Cached getHeads() method
     public List<Head> getHeads() {
-        return Collections.unmodifiableList(Stream.concat(this.registeredHeads.stream(), this.localRegisteredHeads.stream())
-                .sorted(Comparator.comparing(Head::getName))
-                .collect(Collectors.toList()));
+        if (cachedHeads == null) {
+            cachedHeads = Collections.unmodifiableList(Stream.concat(
+                            this.registeredHeads.stream(),
+                            this.localRegisteredHeads.stream())
+                    .sorted(Comparator.comparing(Head::getName))
+                    .collect(Collectors.toList()));
+        }
+        return cachedHeads;
     }
 
     public Integer getNextLocalId() {
@@ -97,11 +124,12 @@ public class HeadManager {
 
     public Head disableHead(Head head) {
         if (head.isLocal() && this.localRegisteredHeads.remove(head)) {
+            invalidateCache();
             return head;
         }
-
         this.disabledHeads.add(head);
         this.registeredHeads.remove(head);
+        invalidateCache();
         return head;
     }
 
@@ -111,6 +139,7 @@ public class HeadManager {
 
     public void removeLocalHead(Head head) {
         this.localRegisteredHeads.remove(head);
+        invalidateCache();
     }
 
     public Category addCategory(Category category) {
@@ -142,10 +171,60 @@ public class HeadManager {
         return addCategory(new Category(name));
     }
 
+    public Head getHeadById(int id) {
+        return getHeads().stream()
+                .filter(head -> head.getId() == id)
+                .findFirst().orElse(null);
+    }
+
     public void clear() {
         this.registeredHeads.clear();
         this.localRegisteredHeads.clear();
         this.disabledHeads.clear();
         this.registeredCategories.clear();
+        invalidateCache();
+    }
+
+    /**
+     * Load rating statistics asynchronously for a collection of heads
+     */
+    private void loadRatingStatsAsync(Collection<Head> heads) {
+        if (heads.isEmpty()) return;
+        
+        Bukkit.getScheduler().runTaskAsynchronously(Bukkit.getPluginManager().getPlugin("EpicHeads"), () -> {
+            for (Head head : heads) {
+                if (head.isLocal()) {
+                    DataHelper.updateHeadRatingStats(head);
+                }
+            }
+        });
+    }
+
+    /**
+     * Get heads sorted by rating (highest first)
+     */
+    public List<Head> getHeadsSortedByRating() {
+        return getHeads().stream()
+                .sorted((h1, h2) -> Double.compare(h2.getAverageRating(), h1.getAverageRating()))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Get top N rated heads
+     */
+    public List<Head> getTopRatedHeads(int limit) {
+        return getHeadsSortedByRating().stream()
+                .limit(limit)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Get heads with rating above minimum threshold
+     */
+    public List<Head> getHeadsByMinRating(double minRating) {
+        return getHeads().stream()
+                .filter(head -> head.getAverageRating() >= minRating)
+                .sorted((h1, h2) -> Double.compare(h2.getAverageRating(), h1.getAverageRating()))
+                .collect(Collectors.toList());
     }
 }

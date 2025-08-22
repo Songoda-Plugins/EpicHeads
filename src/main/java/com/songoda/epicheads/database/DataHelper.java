@@ -216,6 +216,74 @@ public class DataHelper {
         });
     }
 
+    public static void addHeadRating(int headId, UUID playerUuid, int rating) {
+        dataManager.getAsyncPool().submit(() -> {
+            try (Connection connection = databaseConnector.getConnection()) {
+                String sql = "INSERT INTO " + getTablePrefix() + "head_ratings (head_id, player_uuid, rating) " +
+                        "VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE rating = ?, rated_at = CURRENT_TIMESTAMP";
+                try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                    statement.setInt(1, headId);
+                    statement.setString(2, playerUuid.toString());
+                    statement.setInt(3, rating);
+                    statement.setInt(4, rating);
+                    statement.executeUpdate();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    public static void getHeadRatings(int headId, Consumer<Double> averageCallback, Consumer<Integer> totalCallback) {
+        dataManager.getAsyncPool().submit(() -> {
+            try (Connection connection = databaseConnector.getConnection()) {
+                String sql = "SELECT AVG(rating) as avg_rating, COUNT(*) as total_ratings " +
+                        "FROM " + getTablePrefix() + "head_ratings WHERE head_id = ?";
+                try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                    statement.setInt(1, headId);
+                    ResultSet result = statement.executeQuery();
+                    if (result.next()) {
+                        double avgRating = result.getDouble("avg_rating");
+                        int totalRatings = result.getInt("total_ratings");
+                        averageCallback.accept(avgRating);
+                        totalCallback.accept(totalRatings);
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    public static void getPlayerHeadRating(int headId, UUID playerUuid, Consumer<Integer> callback) {
+        dataManager.getAsyncPool().submit(() -> {
+            try (Connection connection = databaseConnector.getConnection()) {
+                String sql = "SELECT rating FROM " + getTablePrefix() + "head_ratings " +
+                        "WHERE head_id = ? AND player_uuid = ?";
+                try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                    statement.setInt(1, headId);
+                    statement.setString(2, playerUuid.toString());
+                    ResultSet result = statement.executeQuery();
+                    if (result.next()) {
+                        callback.accept(result.getInt("rating"));
+                    } else {
+                        callback.accept(0); // No rating found
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                callback.accept(0);
+            }
+        });
+    }
+
+    public static void updateHeadRatingStats(Head head) {
+        getHeadRatings(head.getId(), 
+            avgRating -> head.setAverageRating(avgRating),
+            totalRatings -> head.setTotalRatings(totalRatings)
+        );
+    }
+
     public static boolean isInitialized() {
         return dataManager != null;
     }
