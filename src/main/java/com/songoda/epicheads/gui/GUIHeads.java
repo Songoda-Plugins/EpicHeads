@@ -191,8 +191,8 @@ public class GUIHeads extends Gui {
             ItemMeta meta = item.getItemMeta();
             List<String> lore = item.getItemMeta().getLore();
             lore.add("");
-            lore.add("§aLeft-click to get this head");
-            lore.add("§7Right-click to rate this head");
+            lore.add(this.plugin.getLocale().getMessage("gui.heads.leftclick").toText());
+            lore.add(this.plugin.getLocale().getMessage("gui.heads.rightclick").toText());
             lore.add(this.plugin.getLocale().getMessage("gui.heads.delete").toText());
             meta.setLore(lore);
             item.setItemMeta(meta);
@@ -216,27 +216,36 @@ public class GUIHeads extends Gui {
                     return;
                 } else if (event.clickType == ClickType.RIGHT) {
                     // Right-click to rate head
+                    if (!event.player.hasPermission("epicheads.rate")) {
+                        this.plugin.getLocale().getMessage("event.rating.nopermission").sendPrefixedMessage(event.player);
+                        return;
+                    }
                     exit();
                     ChatPrompt.showPrompt(this.plugin, event.player, 
-                        "§6Rate this head (1-5 stars): ", 
+                        this.plugin.getLocale().getMessage("event.rating.prompt").toText(), 
                         promptEvent -> {
                             try {
                                 int rating = Integer.parseInt(promptEvent.getMessage().trim());
                                 if (rating >= 1 && rating <= 5) {
                                     DataHelper.addHeadRating(head.getId(), event.player.getUniqueId(), rating);
                                     DataHelper.updateHeadRatingStats(head);
-                                    event.player.sendMessage("§7You rated §6" + head.getName() + " §7with §e" + rating + " star" + (rating != 1 ? "s" : "") + "§7!");
+                                    String plural = rating != 1 ? "s" : "";
+                                    this.plugin.getLocale().getMessage("event.rating.success")
+                                        .processPlaceholder("head", head.getName())
+                                        .processPlaceholder("rating", String.valueOf(rating))
+                                        .processPlaceholder("plural", plural)
+                                        .sendPrefixedMessage(event.player);
                                 } else {
-                                    event.player.sendMessage("§cPlease enter a rating between 1-5!");
+                                    this.plugin.getLocale().getMessage("event.rating.invalid").sendPrefixedMessage(event.player);
                                 }
                             } catch (NumberFormatException e) {
-                                event.player.sendMessage("§cPlease enter a valid number between 1-5!");
+                                this.plugin.getLocale().getMessage("event.rating.invalidnumber").sendPrefixedMessage(event.player);
                             }
                         }).setOnClose(() -> {
                             showPage();
                             this.guiManager.showGUI(event.player, this);
                         }).setOnCancel(() -> {
-                            event.player.sendMessage("§cRating canceled.");
+                            this.plugin.getLocale().getMessage("event.rating.canceled").sendPrefixedMessage(event.player);
                             showPage();
                             this.guiManager.showGUI(event.player, this);
                         });
