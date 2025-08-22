@@ -191,6 +191,7 @@ public class GUIHeads extends Gui {
             ItemMeta meta = item.getItemMeta();
             List<String> lore = item.getItemMeta().getLore();
             lore.add("");
+            lore.add("§aLeft-click to get this head");
             lore.add("§7Right-click to rate this head");
             lore.add(this.plugin.getLocale().getMessage("gui.heads.delete").toText());
             meta.setLore(lore);
