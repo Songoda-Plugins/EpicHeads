@@ -82,7 +82,12 @@ public class GUIHeads extends Gui {
     private void showPage() {
         if (!isOpen())
             updateTitle();
-        List<Head> pageHeads = this.heads.stream().skip((this.page - 1) * (this.rows - 1) * 9).limit((this.rows - 1) * 9)
+        // Sort heads by rating (highest first), then by favorites
+        List<Head> sortedHeads = this.heads.stream()
+                .sorted(Comparator.<Head>comparingDouble(head -> head.getAverageRating()).reversed())
+                .collect(Collectors.toList());
+        
+        List<Head> pageHeads = sortedHeads.stream().skip((this.page - 1) * (this.rows - 1) * 9).limit((this.rows - 1) * 9)
                 .collect(Collectors.toList());
 
         if (this.page - 3 >= 1) {
@@ -185,6 +190,8 @@ public class GUIHeads extends Gui {
             ItemStack item = head.asItemStack(favorites.contains(head.getUrl()), free);
             ItemMeta meta = item.getItemMeta();
             List<String> lore = item.getItemMeta().getLore();
+            lore.add("");
+            lore.add("§7Right-click to rate this head");
             lore.add(this.plugin.getLocale().getMessage("gui.heads.delete").toText());
             meta.setLore(lore);
             item.setItemMeta(meta);
@@ -205,6 +212,33 @@ public class GUIHeads extends Gui {
                         ePlayer.addFavorite(head.getUrl());
                     }
                     showPage();
+                    return;
+                } else if (event.clickType == ClickType.RIGHT) {
+                    // Right-click to rate head
+                    exit();
+                    ChatPrompt.showPrompt(this.plugin, event.player, 
+                        "§6Rate this head (1-5 stars): ", 
+                        promptEvent -> {
+                            try {
+                                int rating = Integer.parseInt(promptEvent.getMessage().trim());
+                                if (rating >= 1 && rating <= 5) {
+                                    DataHelper.addHeadRating(head.getId(), event.player.getUniqueId(), rating);
+                                    DataHelper.updateHeadRatingStats(head);
+                                    event.player.sendMessage("§7You rated §6" + head.getName() + " §7with §e" + rating + " star" + (rating != 1 ? "s" : "") + "§7!");
+                                } else {
+                                    event.player.sendMessage("§cPlease enter a rating between 1-5!");
+                                }
+                            } catch (NumberFormatException e) {
+                                event.player.sendMessage("§cPlease enter a valid number between 1-5!");
+                            }
+                        }).setOnClose(() -> {
+                            showPage();
+                            this.guiManager.showGUI(event.player, this);
+                        }).setOnCancel(() -> {
+                            event.player.sendMessage("§cRating canceled.");
+                            showPage();
+                            this.guiManager.showGUI(event.player, this);
+                        });
                     return;
                 }
                 if (!free) {

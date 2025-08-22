@@ -16,6 +16,8 @@ public class Head {
     private String name = null;
     private String url = null;
     private final boolean local;
+    private double averageRating = 0.0;
+    private int totalRatings = 0;
 
     private Category category;
 
@@ -24,6 +26,8 @@ public class Head {
         this.url = url;
         this.category = category;
         this.local = local;
+        this.averageRating = 0.0;
+        this.totalRatings = 0;
     }
 
     public Head(int id, String name, String url, Category category, boolean local) {
@@ -32,11 +36,15 @@ public class Head {
         this.url = url;
         this.category = category;
         this.local = local;
+        this.averageRating = 0.0;
+        this.totalRatings = 0;
     }
 
     public Head(int id, boolean local) {
         this.id = id;
         this.local = local;
+        this.averageRating = 0.0;
+        this.totalRatings = 0;
     }
 
     public int getId() {
@@ -90,6 +98,38 @@ public class Head {
         return this.local;
     }
 
+    public double getAverageRating() {
+        return this.averageRating;
+    }
+
+    public void setAverageRating(double averageRating) {
+        this.averageRating = averageRating;
+    }
+
+    public int getTotalRatings() {
+        return this.totalRatings;
+    }
+
+    public void setTotalRatings(int totalRatings) {
+        this.totalRatings = totalRatings;
+    }
+
+    public String getRatingDisplay() {
+        if (this.totalRatings == 0) {
+            return "☆☆☆☆☆";
+        }
+        int fullStars = (int) Math.round(this.averageRating);
+        StringBuilder stars = new StringBuilder();
+        for (int i = 1; i <= 5; i++) {
+            if (i <= fullStars) {
+                stars.append("★");
+            } else {
+                stars.append("☆");
+            }
+        }
+        return stars.toString();
+    }
+
     public ItemStack asItemStack() {
         return asItemStack(false, false);
     }
@@ -118,6 +158,10 @@ public class Head {
         List<String> lore = new ArrayList<>();
         lore.add(plugin.getLocale().getMessage("general.head.id")
                 .processPlaceholder("id", this.id).toText());
+        
+        // Add rating display to lore
+        String ratingText = getRatingDisplay() + " (" + this.totalRatings + " rating" + (this.totalRatings != 1 ? "s" : "") + ")";
+        lore.add(TextUtils.formatText("&7Rating: &e" + ratingText));
         if (!free) {
             String fcost = Settings.ECONOMY_PLUGIN.getString().equalsIgnoreCase("item")
                     ? cost + " " + Settings.ITEM_TOKEN_TYPE.getString()

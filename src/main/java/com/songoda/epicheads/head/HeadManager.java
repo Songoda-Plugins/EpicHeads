@@ -1,5 +1,8 @@
 package com.songoda.epicheads.head;
 
+import com.songoda.epicheads.database.DataHelper;
+import org.bukkit.Bukkit;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -54,6 +57,8 @@ public class HeadManager {
     public void addLocalHeads(Collection<Head> heads) {
         this.localRegisteredHeads.addAll(heads);
         invalidateCache();
+        // Load rating stats for local heads
+        loadRatingStatsAsync(heads);
     }
 
     public Head getHead(String name) {
@@ -166,11 +171,60 @@ public class HeadManager {
         return addCategory(new Category(name));
     }
 
+    public Head getHeadById(int id) {
+        return getHeads().stream()
+                .filter(head -> head.getId() == id)
+                .findFirst().orElse(null);
+    }
+
     public void clear() {
         this.registeredHeads.clear();
         this.localRegisteredHeads.clear();
         this.disabledHeads.clear();
         this.registeredCategories.clear();
         invalidateCache();
+    }
+
+    /**
+     * Load rating statistics asynchronously for a collection of heads
+     */
+    private void loadRatingStatsAsync(Collection<Head> heads) {
+        if (heads.isEmpty()) return;
+        
+        Bukkit.getScheduler().runTaskAsynchronously(Bukkit.getPluginManager().getPlugin("EpicHeads"), () -> {
+            for (Head head : heads) {
+                if (head.isLocal()) {
+                    DataHelper.updateHeadRatingStats(head);
+                }
+            }
+        });
+    }
+
+    /**
+     * Get heads sorted by rating (highest first)
+     */
+    public List<Head> getHeadsSortedByRating() {
+        return getHeads().stream()
+                .sorted((h1, h2) -> Double.compare(h2.getAverageRating(), h1.getAverageRating()))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Get top N rated heads
+     */
+    public List<Head> getTopRatedHeads(int limit) {
+        return getHeadsSortedByRating().stream()
+                .limit(limit)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Get heads with rating above minimum threshold
+     */
+    public List<Head> getHeadsByMinRating(double minRating) {
+        return getHeads().stream()
+                .filter(head -> head.getAverageRating() >= minRating)
+                .sorted((h1, h2) -> Double.compare(h2.getAverageRating(), h1.getAverageRating()))
+                .collect(Collectors.toList());
     }
 }

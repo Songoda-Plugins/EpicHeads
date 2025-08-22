@@ -2,6 +2,7 @@ package com.songoda.epicheads.gui;
 
 import com.songoda.core.gui.Gui;
 import com.songoda.core.gui.GuiUtils;
+import com.songoda.core.utils.ItemUtils;
 import com.songoda.epicheads.EpicHeads;
 import com.songoda.epicheads.head.Category;
 import com.songoda.epicheads.head.Head;

@@ -23,6 +23,7 @@ import com.songoda.epicheads.commands.CommandUrl;
 import com.songoda.epicheads.database.DataHelper;
 import com.songoda.epicheads.database.migrations._1_InitialMigration;
 import com.songoda.epicheads.database.migrations._2_FixAutoIncrementMigration;
+import com.songoda.epicheads.database.migrations._3_AddRatingsMigration;
 import com.songoda.epicheads.head.Category;
 import com.songoda.epicheads.head.Head;
 import com.songoda.epicheads.head.HeadManager;
@@ -136,7 +137,7 @@ public class EpicHeads extends SongodaPlugin {
         this.databaseConnector = new SQLiteConnector(this);
         this.getLogger().info("Data handler connected using SQLite.");
 
-        initDatabase(new _1_InitialMigration(), new _2_FixAutoIncrementMigration());
+        initDatabase(new _1_InitialMigration(), new _2_FixAutoIncrementMigration(), new _3_AddRatingsMigration());
         DataHelper.init(this.dataManager);
 
         Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
