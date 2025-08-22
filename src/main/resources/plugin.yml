@@ -18,3 +18,56 @@ commands:
     default: true
     aliases: [ heads, ehe ]
     usage: /epicheads
+
+permissions:
+  epicheads.*:
+    description: Gives access to all EpicHeads features
+    default: op
+    children:
+      epicheads.menu: true
+      epicheads.admin: true
+      epicheads.add: true
+      epicheads.give: true
+      epicheads.givetoken: true
+      epicheads.base64: true
+      epicheads.url: true
+      epicheads.search: true
+      epicheads.bypasscost: true
+      epicheads.delete: true
+      epicheads.rate: true
+  epicheads.menu:
+    description: Allows access to the heads overview GUI
+    default: true
+  epicheads.admin:
+    description: Allows access to admin commands (reload, settings)
+    default: op
+  epicheads.add:
+    description: Allows adding custom heads to the database
+    default: op
+  epicheads.give:
+    description: Allows giving heads to other players
+    default: op
+  epicheads.givetoken:
+    description: Allows giving head tokens to other players
+    default: op
+  epicheads.base64:
+    description: Allows getting base64 code of held heads
+    default: op
+  epicheads.url:
+    description: Allows getting texture URL of held heads
+    default: op
+  epicheads.search:
+    description: Allows access to the search GUI
+    default: true
+  epicheads.bypasscost:
+    description: Allows bypassing head purchase costs
+    default: op
+  epicheads.delete:
+    description: Allows deleting heads via middle-click in GUI
+    default: op
+  epicheads.rate:
+    description: Allows rating heads
+    default: true
+  epicheads.category.*:
+    description: Gives access to all head categories
+    default: true
